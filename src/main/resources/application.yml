@@ -1,0 +1,16 @@
+spring:
+   profiles:
+      active: local
+   autoconfigure:
+      exclude: org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration
+   jpa:
+      open-in-view: false
+      hibernate:
+         naming:
+            implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+            physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+springdoc:
+   swagger-ui:
+      tagsSorter: alpha
+      operationsSorter: alpha

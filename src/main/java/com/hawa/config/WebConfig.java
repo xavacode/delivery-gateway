@@ -1,0 +1,47 @@
+package com.hawa.config;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.hawa.handler.RestTemplateResponseErrorHandler;
+import com.hawa.interceptor.TokenInterceptor;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Primary;
+import org.springframework.web.client.RestTemplate;
+
+import java.time.Duration;
+
+@Configuration
+public class WebConfig {
+
+    @Bean
+    @Primary
+    public RestTemplate restTemplate(RestTemplateBuilder builder,
+                                     TokenInterceptor tokenInterceptor) {
+        return builder
+                .setConnectTimeout(Duration.ofSeconds(10))
+                .setReadTimeout(Duration.ofSeconds(30))
+                .additionalInterceptors(tokenInterceptor)
+                .errorHandler(new RestTemplateResponseErrorHandler())
+                .build();
+    }
+
+    @Bean
+    public RestTemplate restTemplateToFetchToken(RestTemplateBuilder builder) {
+        return builder
+                .setConnectTimeout(Duration.ofSeconds(10))
+                .setReadTimeout(Duration.ofSeconds(30))
+                .build();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        return objectMapper;
+    }
+}

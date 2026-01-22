@@ -14,7 +14,7 @@ echo "Deploying $JAR_FILE to $DROPLET_IP..."
 
 # Stop service before deployment
 
-ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${DEV_USER}@${DROPLET_IP} << 'EOF'
+ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${DEV_USER}@${DROPLET_IP} << EOF
 "systemctl stop ${APP_NAME} || true"
 
 # Copy new JAR

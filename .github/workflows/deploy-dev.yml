@@ -6,17 +6,6 @@ on:
       - master
 
 jobs:
-  migrate-dev:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-            export DB_HOST=${{ secrets.DEV_HOST }}
-            export DB_PORT=${{ secrets.DEV_DB_PORT }}
-            export DB_USER=${{ secrets.DEV_DB_USER }}
-            export DB_PASSWORD=${{ secrets.DEV_DB_PASSWORD }}
-            export DB_NAME=${{ secrets.DEV_DB_NAME }}
-            mvn flyway:migrate
-
   build-and-deploy:
     runs-on: ubuntu-latest
 
@@ -33,10 +22,19 @@ jobs:
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
+      - run: |
+          export DB_HOST=${{ secrets.DEV_HOST }}
+          export DB_PORT=${{ secrets.DEV_DB_PORT }}
+          export DB_USER=${{ secrets.DEV_DB_USER }}
+          export DB_PASSWORD=${{ secrets.DEV_DB_PASSWORD }}
+          export DB_NAME=${{ secrets.DEV_DB_NAME }}
+          mvn flyway:migrate
+
       - name: Download JAR
         uses: actions/download-artifact@v7
         with:
           name: delivery-gateway
+
       - name: Deploy to Digital Ocean
         env:
           APP_NAME: "delivery-gateway"

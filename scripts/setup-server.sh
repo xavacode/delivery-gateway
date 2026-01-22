@@ -49,6 +49,7 @@ SERVICE_EOF
   # Setup firewall (allow SSH, HTTP, and app port)
   ufw allow 22/tcp
   ufw allow 8080/tcp
+  ufw allow 3306/tcp
   ufw --force enable
 
   echo "Server setup completed!"

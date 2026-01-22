@@ -1,7 +1,7 @@
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mariadb://${DB_HOST}:${DB_PORT}/${DB_NAME}?zeroDateTimeBehavior=CONVERT_TO_NULL&autoReconnect=true&useSSL=false
+    url: ${DB_URL}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driverClassName: org.mariadb.jdbc.Driver

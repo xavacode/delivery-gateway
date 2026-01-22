@@ -6,7 +6,7 @@ APP_NAME="delivery-gateway"
 
 echo "Setting up server at $DROPLET_IP..."
 
-ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${DEV_USER}@${DB_HOST} << 'EOF'
+ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${DEV_USER}@${DROPLET_IP} << 'EOF'
   # Create application user (no login, system user)
   if ! id "$APP_NAME" &>/dev/null; then
     useradd -r -s /bin/false -m -d /opt/$APP_NAME $APP_NAME

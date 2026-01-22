@@ -13,6 +13,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Setup script permissions
+        run: |
+          # Make all shell scripts executable
+          find . -name "*.sh" -type f -exec chmod +x {} \;
+            
+          # Verify
+          echo "Scripts in scripts/ directory:"
+          ls -la scripts/ || echo "No scripts directory"
+
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:

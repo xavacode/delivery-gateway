@@ -42,4 +42,4 @@ management:
     token:
       enabled: true
 
-logPath: /home/ubuntu/log/delivery-gateway
+logPath: /opt/delivery-gateway/logs

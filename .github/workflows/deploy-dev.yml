@@ -28,6 +28,7 @@ jobs:
           export DB_USER=${{ secrets.DEV_DB_USER }}
           export DB_PASSWORD=${{ secrets.DEV_DB_PASSWORD }}
           export DB_NAME=${{ secrets.DEV_DB_NAME }}
+          echo "Database name" "$DB_NAME"
           mvn flyway:migrate
 
       - name: Download JAR

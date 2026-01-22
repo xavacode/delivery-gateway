@@ -3,7 +3,7 @@
 
 DROPLET_IP="$1"
 APP_NAME="delivery-gateway"
-JAR_FILE=$(ls *.jar | head -1)  # Get the built JAR
+JAR_FILE=$(ls target/*.jar | head -1)  # Get the built JAR
 
 if [ -z "$JAR_FILE" ]; then
   echo "Error: No JAR file found!"

@@ -50,7 +50,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           
           # Check if server is setup, setup if not
-          if ! ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 -i ~/.ssh/id_rsa ${{ secrets.DEV_USER }}@${{ secrets.DEV_HOST }} "systemctl list-unit-files | grep -q $APP_NAME"; then
+          if ! ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 -i ~/.ssh/id_rsa ${{ secrets.DEV_USER }}@${{ secrets.DEV_HOST }} "systemctl list-unit-files | grep -q ${APP_NAME}"; then
             echo "First-time server setup..."
             ./scripts/setup-server.sh ${{ secrets.DEV_HOST }}
           fi

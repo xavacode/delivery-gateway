@@ -1,0 +1,56 @@
+name: Deploy App
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  migrate-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+            export DB_HOST=${{ secrets.DEV_HOST }}
+            export DB_PORT=${{ secrets.DEV_DB_PORT }}
+            export DB_USER=${{ secrets.DEV_DB_USER }}
+            export DB_PASSWORD=${{ secrets.DEV_DB_PASSWORD }}
+            export DB_NAME=${{ secrets.DEV_DB_NAME }}
+            mvn flyway:migrate
+
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+
+      - name: Download JAR
+        uses: actions/download-artifact@v7
+        with:
+          name: delivery-gateway
+      - name: Deploy to Digital Ocean
+        env:
+          APP_NAME: "delivery-gateway"
+        run: |
+          # Setup SSH
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEV_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          
+          # Check if server is setup, setup if not
+          if ! ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 -i ~/.ssh/id_rsa ${{ secrets.DEV_USER }}@${{ secrets.DEV_HOST }} "systemctl list-unit-files | grep -q $APP_NAME"; then
+            echo "First-time server setup..."
+            ./scripts/setup-server.sh ${{ secrets.DEV_HOST }}
+          fi
+          
+          # Deploy application
+          ./scripts/deploy.sh ${{ secrets.DEV_HOST }}

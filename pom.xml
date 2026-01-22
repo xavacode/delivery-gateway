@@ -126,31 +126,6 @@
       <version>${flyway.version}</version>
     </dependency>
   </dependencies>
-  <profiles>
-    <profile>
-      <id>local</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <flyway.configFile>config/flyway/flyway-local.conf</flyway.configFile>
-      </properties>
-    </profile>
-
-    <profile>
-      <id>dev</id>
-      <properties>
-        <flyway.configFile>config/flyway/flyway-dev.conf</flyway.configFile>
-      </properties>
-    </profile>
-
-    <profile>
-      <id>prod</id>
-      <properties>
-        <flyway.configFile>config/flyway/flyway-prod.conf</flyway.configFile>
-      </properties>
-    </profile>
-  </profiles>
   <build>
     <plugins>
       <plugin>
@@ -211,10 +186,7 @@
         <groupId>org.flywaydb</groupId>
         <artifactId>flyway-maven-plugin</artifactId>
         <version>${flyway.version}</version>
-        <configuration>
-          <configFiles>${flyway.configFile}</configFiles>
-        </configuration>
-      </plugin>
+       </plugin>
     </plugins>
   </build>
 </project>

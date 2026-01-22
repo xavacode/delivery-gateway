@@ -42,6 +42,7 @@ jobs:
       - name: Deploy to Digital Ocean
         env:
           APP_NAME: "delivery-gateway"
+          DEV_USER: ${{ secrets.DEV_USER }}
         run: |
           # Setup SSH
           mkdir -p ~/.ssh

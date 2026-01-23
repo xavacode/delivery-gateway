@@ -36,14 +36,6 @@ public class OpenApiConfiguration {
 
     @Bean
     public OpenAPI defineOpenApi() {
-        Server server = new Server();
-        server.setUrl("http://localhost:8080");
-        server.setDescription("Local");
-
-        Server server1 = new Server();
-        server1.setUrl("http://ec2-3-27-3-52.ap-southeast-2.compute.amazonaws.com:8080");
-        server1.setDescription("Development");
-
         Contact myContact = new Contact();
         myContact.setName("admin");
         myContact.setEmail("admin@hawa.com");
@@ -52,9 +44,9 @@ public class OpenApiConfiguration {
                 .title("Delivery Gateway API")
                 .version("1.0")
                 .description(
-                        "This API exposes endpoints to manage configurations.")
+                        "This API exposes endpoints to manage deliveries.")
                 .contact(myContact);
-        return new OpenAPI().info(information).servers(List.of(server, server1));
+        return new OpenAPI().info(information);
 
     }
 

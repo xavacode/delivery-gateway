@@ -1,4 +1,4 @@
-package com.hawa.dto.webhook;
+package com.hawa.dto.webhook.stuart;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -6,7 +6,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Data
-public class StuartWebhookDto {
+public class WebhookDto {
 
     @JsonProperty("version")
     private String version;  // "v3"
@@ -24,5 +24,5 @@ public class StuartWebhookDto {
     private String topic;  // "package_created"
 
     @JsonProperty("details")
-    private StuartWebhookDetails details;
+    private WebhookDetails details;
 }

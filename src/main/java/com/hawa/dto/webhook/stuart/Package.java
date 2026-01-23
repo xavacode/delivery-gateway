@@ -1,10 +1,10 @@
-package com.hawa.dto.webhook;
+package com.hawa.dto.webhook.stuart;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class StuartPackage {
+public class Package {
 
     @JsonProperty("id")
     private String id;  // "10000000001"

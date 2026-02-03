@@ -1,11 +1,11 @@
 CREATE TABLE delivery_log (
     id BIGINT NOT NULL,
     status VARCHAR(50) NOT NULL,
-    created_at DATETIME(6)
+    created_at DATETIME(6),
     delivery_id BIGINT,
     PRIMARY KEY (id),
     INDEX idx_status (status),
-    INDEX idx_delivery_id (delivery_id)
+    INDEX idx_delivery_id (delivery_id),
     CONSTRAINT fk_delivery
         FOREIGN KEY (delivery_id)
         REFERENCES delivery(id)

@@ -32,4 +32,8 @@ public class WebhookDetails {
 
     private Coordinates coordinates;
 
+    public String getPackageId(){
+        return this.pkg.getId();
+    }
+
 }

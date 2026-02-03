@@ -11,6 +11,7 @@ import com.hawa.model.Job;
 import com.hawa.repository.JobRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -84,6 +85,11 @@ public class StuartServiceImpl implements StuartService {
 
 
     @Override
+    @Cacheable(
+            value = "job-validates",
+            keyGenerator = "payloadKeyGenerator",
+            unless = "#result == null"
+    )
     public JobValidationResponseDto validateJob(JobCreateRequestDto jobCreateRequestDto) {
         HttpEntity<JobCreateRequestDto> request = new HttpEntity<>(jobCreateRequestDto);
         ResponseEntity<JobValidationResponseDto> response = restTemplate.exchange(
@@ -92,6 +98,7 @@ public class StuartServiceImpl implements StuartService {
                 request,
                 JobValidationResponseDto.class
         );
+        log.info("Response fetched from api");
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
             return response.getBody();
         }
@@ -99,6 +106,11 @@ public class StuartServiceImpl implements StuartService {
     }
 
     @Override
+    @Cacheable(
+            value = "job-pricings",
+            keyGenerator = "payloadKeyGenerator",
+            unless = "#result == null"
+    )
     public JobPricingResponseDto getJobPrice(JobCreateRequestDto jobCreateRequestDto) {
         HttpEntity<JobCreateRequestDto> request = new HttpEntity<>(jobCreateRequestDto);
         ResponseEntity<JobPricingResponseDto> response = restTemplate.exchange(
@@ -129,6 +141,11 @@ public class StuartServiceImpl implements StuartService {
     }
 
     @Override
+    @Cacheable(
+            value = "job-drop-off-etas",
+            keyGenerator = "payloadKeyGenerator",
+            unless = "#result == null"
+    )
     public JobDropoffEtaResponseDto getJobDropoffEta(JobCreateRequestDto jobCreateRequestDto) {
         HttpEntity<JobCreateRequestDto> request = new HttpEntity<>(jobCreateRequestDto);
         ResponseEntity<JobDropoffEtaResponseDto> response = restTemplate.exchange(

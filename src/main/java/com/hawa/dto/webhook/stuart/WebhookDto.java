@@ -25,4 +25,8 @@ public class WebhookDto {
 
     @JsonProperty("details")
     private WebhookDetails details;
+
+    public long getPackageId(){
+        return Long.parseLong(this.details.getPackageId());
+    }
 }

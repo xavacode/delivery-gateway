@@ -24,8 +24,9 @@ public class WebhookController {
     private final WebhookService webhookService;
 
     @PostMapping("/stuart/notifications")
-    public ResponseEntity<String> receiveNotifications(@RequestBody WebhookDto webhookDto) throws JsonProcessingException {
-        log.info("Webhook Received: {}",objectMapper.writeValueAsString(webhookDto));
+    public ResponseEntity<String> receiveNotifications(@RequestBody String data) throws JsonProcessingException {
+        log.info("Webhook Received: {}",data);
+        WebhookDto webhookDto=objectMapper.readValue(data, WebhookDto.class);
         webhookService.updateDeliveryStatus(webhookDto);
         return ResponseEntity.ok("OK");
     }

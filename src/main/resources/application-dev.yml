@@ -16,6 +16,15 @@ spring:
     baseline-on-migrate: true
     clean-disabled: true
 
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=10000,expireAfterAccess=600s,recordStats
+    cache-names:
+      - job-validates
+      - job-pricings
+      - job-drop-off-etas
+
 
 stuart:
   api:
@@ -41,5 +50,42 @@ management:
   health:
     token:
       enabled: true
+
+app:
+  cache:
+    # Memory allocation (percentage of heap)
+    max-heap-percentage: 0.35
+
+    # Cache-specific configurations
+    caches:
+      job-validates:
+        max-size: 20000
+        ttl: 120                # 2 minutes
+        record-stats: true
+        soft-values: false
+
+      job-pricings:
+        max-size: 20000
+        ttl: 120              # 2 minutes
+        record-stats: true
+        expire-after-access: true
+
+      job-drop-off-etas:
+        max-size: 20000
+        ttl: 120              # 2 minutes
+        record-stats: true
+        expire-after-access: true
+
+    # Eviction settings
+    eviction:
+      policy: size-based         # size-based or time-based
+      cleanup-delay: 1000        # milliseconds between cleanup runs
+
+    # Monitoring
+    monitoring:
+      enabled: true
+      stats-log-interval: 300    # seconds
+      alert-hit-rate-threshold: 0.7  # Alert if hit rate drops below 70%
+      alert-eviction-threshold: 1000 # Alert if evictions > 1000/min
 
 logPath: /opt/delivery-gateway/logs

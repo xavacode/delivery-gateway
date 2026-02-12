@@ -36,7 +36,8 @@ public class JobController {
     }
 
     @PostMapping("/validate")
-    public ResponseEntity<JobValidationResponseDto> validateJob(@RequestBody JobCreateRequestDto jobCreateRequestDto) {
+    public ResponseEntity<JobValidationResponseDto> validateJob(@RequestBody JobCreateRequestDto jobCreateRequestDto) throws JsonProcessingException {
+        log.info("Validate Job Payload: {}", objectMapper.writeValueAsString(jobCreateRequestDto));
         return ResponseEntity.ok(stuartService.validateJob(jobCreateRequestDto));
     }
 

@@ -88,4 +88,7 @@ app:
       alert-hit-rate-threshold: 0.7  # Alert if hit rate drops below 70%
       alert-eviction-threshold: 1000 # Alert if evictions > 1000/min
 
+  delivery-charge:
+    added-amount: 3
+
 logPath: /opt/delivery-gateway/logs

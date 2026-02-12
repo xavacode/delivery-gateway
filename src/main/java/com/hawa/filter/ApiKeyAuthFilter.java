@@ -34,7 +34,8 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
             "/health",
             "/api/stores",
             "/actuator/**",
-            "/trackings/**"
+            "/trackings/**",
+            "/webhooks/**"
     };
     @Override
     protected void doFilterInternal(HttpServletRequest request,

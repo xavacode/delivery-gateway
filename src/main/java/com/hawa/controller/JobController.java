@@ -1,11 +1,15 @@
 package com.hawa.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hawa.constant.StuartCancellationReasonConstant;
 import com.hawa.dto.job.*;
 import com.hawa.service.StuartService;
 import com.hawa.util.DateTimeUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,15 +17,18 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @Tag(name = "Delivery Job")
 @RestController
 @RequestMapping("/api/jobs")
 @RequiredArgsConstructor
 public class JobController {
 
-    private final int ADDED_PRICE=3;
+    @Value("${app.delivery-charge.added-amount}")
+    private BigDecimal addedAmount;
 
     private final StuartService stuartService;
+    private final ObjectMapper objectMapper;
 
     @PostMapping
     public ResponseEntity<JobCreateResponseDto> createJob(@RequestBody JobCreateRequestDto jobCreateRequestDto) {
@@ -38,7 +45,7 @@ public class JobController {
         JobDropoffEtaResponseDto jobDropoffEtaResponseDto=stuartService.getJobDropoffEta(jobCreateRequestDto);
         JobPricingResponseDto jobPricingResponseDto = stuartService.getJobPrice(jobCreateRequestDto);
         jobPricingResponseDto.setDropoffEta(DateTimeUtil.formatHumanReadable(jobDropoffEtaResponseDto.getDropoffEta()));
-        jobPricingResponseDto.setAmountWithTax(jobPricingResponseDto.getAmountWithTax().add(new BigDecimal(ADDED_PRICE)));
+        jobPricingResponseDto.setAmountWithTax(jobPricingResponseDto.getAmountWithTax().add(addedAmount));
         return ResponseEntity.ok(jobPricingResponseDto);
     }
 

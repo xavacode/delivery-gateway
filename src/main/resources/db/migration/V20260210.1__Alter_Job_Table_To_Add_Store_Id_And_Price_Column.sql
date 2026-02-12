@@ -1,0 +1,6 @@
+ALTER TABLE job
+ADD COLUMN price DECIMAL(15, 2),
+ADD COLUMN store_id BIGINT,
+ADD CONSTRAINT fk_store_job
+FOREIGN KEY (store_id)
+REFERENCES store(id);

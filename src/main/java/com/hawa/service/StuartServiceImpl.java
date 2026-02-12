@@ -8,9 +8,11 @@ import com.hawa.dto.job.*;
 import com.hawa.exception.NotFoundException;
 import com.hawa.model.Delivery;
 import com.hawa.model.Job;
+import com.hawa.model.Store;
 import com.hawa.repository.JobRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -18,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+
+import java.math.BigDecimal;
 
 @Slf4j
 @Service
@@ -28,6 +32,8 @@ public class StuartServiceImpl implements StuartService {
     private final JobRepository jobRepository;
     private final ObjectMapper objectMapper;
     private final StuartApiConfig stuartApiConfig;
+    @Value("${app.delivery-charge.added-amount}")
+    private BigDecimal addedAmount;
 
     @Override
     @Transactional
@@ -50,6 +56,10 @@ public class StuartServiceImpl implements StuartService {
                 job.setEndedAt(jobCreateResponseDto.getEndedAt());
                 job.setPickupAt(jobCreateResponseDto.getPickupAt());
                 job.setPackageType(jobCreateResponseDto.getPackageType());
+                job.setPrice(jobCreateResponseDto.getPricing().getPriceTaxIncluded().add(addedAmount));
+                Store store=new Store();
+                store.setId(jobCreateRequestDto.getStoreId());
+                job.setStore(store);
                 try {
                     job.setResponsePayload(objectMapper.writeValueAsString(jobCreateResponseDto));
                 } catch (JsonProcessingException e) {
@@ -69,7 +79,7 @@ public class StuartServiceImpl implements StuartService {
                     delivery.setStatus(deliveryDto.getStatus());
                     delivery.setClientTrackingUrl(deliveryDto.getClientTrackingUrl());
                     delivery.setDropoffContactName(deliveryDto.getDropoffContactName());
-                    delivery.setPickupContactNumber(deliveryDto.getPickupContactName());
+                    delivery.setPickupContactName(deliveryDto.getPickupContactName());
                     delivery.setDropoffContactNumber(deliveryDto.getDropoffContactNumber());
                     delivery.setPickupContactNumber(delivery.getPickupContactNumber());
                     job.addDelivery(delivery);

@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class PricingDto {
 
     @JsonProperty("price_tax_included")
-    private Double priceTaxIncluded;
+    private BigDecimal priceTaxIncluded;
 
     @JsonProperty("price_tax_excluded")
     private BigDecimal priceTaxExcluded;

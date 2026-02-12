@@ -1,24 +1,16 @@
 package com.hawa.config;
 
 
-import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
-
 @Configuration
 public class OpenApiConfiguration {
-
-    private static final String SCHEME_NAME = "bearerAuth";
-    private static final String BEARER_FORMAT = "JWT";
-    private static final String SCHEME = "bearer";
 
 //    @Bean
 //    public OperationCustomizer customize() {
@@ -46,8 +38,14 @@ public class OpenApiConfiguration {
                 .description(
                         "This API exposes endpoints to manage deliveries.")
                 .contact(myContact);
-        return new OpenAPI().info(information);
-
-    }
-
+        return new OpenAPI().info(information).
+                addSecurityItem(new SecurityRequirement().addList("ApiKeyAuth"))
+                .components(new io.swagger.v3.oas.models.Components()
+                        .addSecuritySchemes("ApiKeyAuth",
+                                new io.swagger.v3.oas.models.security.SecurityScheme()
+                                        .type(SecurityScheme.Type.APIKEY)
+                                        .in(SecurityScheme.In.HEADER)
+                                        .name("X-API-KEY")
+                                        .description("Enter your API key")));
+    };
 }

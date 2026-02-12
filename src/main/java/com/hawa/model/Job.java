@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -60,6 +61,12 @@ public class Job {
 
     @Column(name = "response_payload")
     private String responsePayload;
+
+    private BigDecimal price;
+
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
 
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
     private List<Delivery> deliveries = new ArrayList<>();

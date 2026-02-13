@@ -22,7 +22,7 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -103,13 +103,14 @@
             border-radius: 12px;
             padding: 25px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
         }
 
         .progress-bar {
             height: 8px;
             background-color: #ecf0f1;
             border-radius: 4px;
-            margin: 30px 0 40px;
+            margin: 30px 0 50px;
             overflow: hidden;
         }
 
@@ -125,6 +126,8 @@
             display: flex;
             justify-content: space-between;
             position: relative;
+            min-width: min-content;
+            padding: 0 10px;
         }
 
         .step {
@@ -132,9 +135,10 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-            width: 20%;
+            width: 120px;
             position: relative;
             z-index: 1;
+            flex-shrink: 0;
         }
 
         .step-icon {
@@ -167,11 +171,15 @@
             font-weight: 600;
             margin-bottom: 5px;
             color: #2c3e50;
+            font-size: 0.9rem;
+            line-height: 1.2;
+            max-width: 110px;
         }
 
         .step-datetime {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: #7f8c8d;
+            max-width: 110px;
         }
 
         .no-data {
@@ -201,6 +209,7 @@
             color: white;
             font-size: 2rem;
             font-weight: 600;
+            text-transform: uppercase;
         }
 
         .courier-details h3 {
@@ -236,14 +245,45 @@
             border-top: 1px solid #e0e6ef;
         }
 
-        @media (max-width: 768px) {
+        /* Progress line connector for steps */
+        .steps::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: 60px;
+            right: 60px;
+            height: 3px;
+            background-color: #ecf0f1;
+            z-index: 0;
+        }
+
+        .step.completed + .step.completed::before,
+        .step.active + .step.completed::before,
+        .step.completed + .step.active::before {
+            background: linear-gradient(to right, #2ecc71, #3498db);
+        }
+
+        /* Responsive design for seven steps */
+        @media (max-width: 992px) {
             .steps {
                 flex-wrap: wrap;
-                gap: 30px;
+                justify-content: center;
+                gap: 30px 20px;
             }
 
             .step {
-                width: 45%;
+                width: calc(33.33% - 20px);
+                min-width: 100px;
+            }
+
+            .steps::before {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .step {
+                width: calc(50% - 20px);
             }
 
             .package-header {
@@ -256,12 +296,55 @@
                 flex-direction: column;
                 text-align: center;
             }
+
+            .container {
+                padding: 10px;
+            }
         }
 
         @media (max-width: 480px) {
             .step {
                 width: 100%;
             }
+
+            .step-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .progress-bar {
+                margin: 20px 0 30px;
+            }
+        }
+
+        /* Different icon colors for different steps */
+        .step:nth-child(1) .step-icon i { color: inherit; }
+        .step:nth-child(2) .step-icon i { color: inherit; }
+        .step:nth-child(3) .step-icon i { color: inherit; }
+        .step:nth-child(4) .step-icon i { color: inherit; }
+        .step:nth-child(5) .step-icon i { color: inherit; }
+        .step:nth-child(6) .step-icon i { color: inherit; }
+        .step:nth-child(7) .step-icon i { color: inherit; }
+
+        /* Custom styling for specific step titles that are longer */
+        .step:nth-child(3) .step-title,
+        .step:nth-child(6) .step-title {
+            font-size: 0.85rem;
+        }
+
+        /* Hover effect */
+        .step:hover .step-icon {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .step.completed:hover .step-icon {
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+        }
+
+        .step.active:hover .step-icon {
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.4);
         }
     </style>
 </head>
@@ -342,6 +425,36 @@
                     </div>
                 </div>
 
+                <!-- Courier Arriving For Pickup -->
+                <div th:with="statusDetail=${statusMap != null && statusMap.containsKey('COURIER_ARRIVING_FOR_PICKUP') ? statusMap.get('COURIER_ARRIVING_FOR_PICKUP') : null}">
+                    <div class="step"
+                         th:classappend="${statusDetail != null and statusDetail.status == 'COMPLETED'} ? 'completed' :
+                                            (${statusDetail != null and statusDetail.status == 'ACTIVE'} ? 'active' : '')">
+                        <div class="step-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div class="step-title">Courier Arriving<br>For Pickup</div>
+                        <div class="step-datetime" th:if="${statusDetail != null and statusDetail.dateTime != null}"
+                             th:text="${statusDetail.dateTime}">May 15, 11:15 AM</div>
+                        <div class="step-datetime no-data" th:unless="${statusDetail != null and statusDetail.dateTime != null}">--</div>
+                    </div>
+                </div>
+
+                <!-- Package Delivering -->
+                <div th:with="statusDetail=${statusMap != null && statusMap.containsKey('PACKAGE_DELIVERING') ? statusMap.get('PACKAGE_DELIVERING') : null}">
+                    <div class="step"
+                         th:classappend="${statusDetail != null and statusDetail.status == 'COMPLETED'} ? 'completed' :
+                                            (${statusDetail != null and statusDetail.status == 'ACTIVE'} ? 'active' : '')">
+                        <div class="step-icon">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                        <div class="step-title">Package<br>Delivering</div>
+                        <div class="step-datetime" th:if="${statusDetail != null and statusDetail.dateTime != null}"
+                             th:text="${statusDetail.dateTime}">May 15, 11:15 AM</div>
+                        <div class="step-datetime no-data" th:unless="${statusDetail != null and statusDetail.dateTime != null}">--</div>
+                    </div>
+                </div>
+
                 <!-- Courier Moving -->
                 <div th:with="statusDetail=${statusMap != null && statusMap.containsKey('COURIER_MOVING') ? statusMap.get('COURIER_MOVING') : null}">
                     <div class="step"
@@ -357,23 +470,23 @@
                     </div>
                 </div>
 
-                <!-- Out for Delivery -->
-                <div th:with="statusDetail=${statusMap != null && statusMap.containsKey('OUT_FOR_DELIVERY') ? statusMap.get('OUT_FOR_DELIVERY') : null}">
+                <!-- Courier Arriving For Dropoff -->
+                <div th:with="statusDetail=${statusMap != null && statusMap.containsKey('COURIER_ARRIVING_FOR_DROPOFF') ? statusMap.get('COURIER_ARRIVING_FOR_DROPOFF') : null}">
                     <div class="step"
                          th:classappend="${statusDetail != null and statusDetail.status == 'COMPLETED'} ? 'completed' :
                                             (${statusDetail != null and statusDetail.status == 'ACTIVE'} ? 'active' : '')">
                         <div class="step-icon">
-                            <i class="fas fa-map-marker-alt"></i>
+                            <i class="fas fa-map-pin"></i>
                         </div>
-                        <div class="step-title">Out for Delivery</div>
+                        <div class="step-title">Courier Arriving<br>For Dropoff</div>
                         <div class="step-datetime" th:if="${statusDetail != null and statusDetail.dateTime != null}"
-                             th:text="${statusDetail.dateTime}">Tomorrow, 10:00 AM</div>
+                             th:text="${statusDetail.dateTime}">May 15, 11:15 AM</div>
                         <div class="step-datetime no-data" th:unless="${statusDetail != null and statusDetail.dateTime != null}">--</div>
                     </div>
                 </div>
 
                 <!-- Package Delivered -->
-                <div th:with="statusDetail=${statusMap != null && statusMap.containsKey('DELIVERED') ? statusMap.get('DELIVERED') : null}">
+                <div th:with="statusDetail=${statusMap != null && statusMap.containsKey('PACKAGE_DELIVERED') ? statusMap.get('PACKAGE_DELIVERED') : null}">
                     <div class="step"
                          th:classappend="${statusDetail != null and statusDetail.status == 'COMPLETED'} ? 'completed' :
                                             (${statusDetail != null and statusDetail.status == 'ACTIVE'} ? 'active' : '')">
@@ -396,26 +509,8 @@
             </div>
             <div class="courier-details">
                 <h3 th:text="|Your Courier: ${tracking.courierName ?: 'Not Assigned'}|">Your Courier: Michael Johnson</h3>
-<!--                <p th:if="${tracking.courier.phone != null}">-->
-<!--                    <i class="fas fa-phone-alt"></i> <span th:text="${tracking.courier.phone}">+1 (555) 123-4567</span>-->
-<!--                </p>-->
-<!--                <p th:if="${tracking.courier.rating != null}">-->
-<!--                    <i class="fas fa-star"></i> <span th:text="|${tracking.courier.rating}/5 Rating (${tracking.courier.deliveries ?: 0} deliveries)|">4.8/5 Rating (1,240 deliveries)</span>-->
-<!--                </p>-->
             </div>
         </div>
-
-        <!-- Live Map -->
-<!--        <div class="map-placeholder" th:if="${tracking.currentLocation != null}">-->
-<!--            <i class="fas fa-map-marked-alt"></i>-->
-<!--            <h3>Live Delivery Map</h3>-->
-<!--            <p th:text="|Current location: ${tracking.currentLocation}|">Live tracking map would appear here showing real-time location of your package</p>-->
-<!--        </div>-->
-<!--        <div class="map-placeholder" th:unless="${tracking.currentLocation != null}">-->
-<!--            <i class="fas fa-map-marked-alt"></i>-->
-<!--            <h3>Live Delivery Map</h3>-->
-<!--            <p>Location tracking will be available once your package is in transit</p>-->
-<!--        </div>-->
     </div>
 
     <div class="tracking-container" th:unless="${tracking != null}">

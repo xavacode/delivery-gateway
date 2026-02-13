@@ -35,12 +35,20 @@ public class TrackingController {
                 .courierName(delivery.getCourierName()).build();
         Map<String, TrackingDto.DelieryStatus> statusMap=new HashMap<>();
         for (DeliveryLog deliveryLog : delivery.getDeliveryLogs()) {
+            if(deliveryLog.getStatus().equals("courier_arriving")){
+                if(statusMap.containsKey("COURIER_ARRIVING_FOR_PICKUP")){
+                    statusMap.put(deliveryLog.getStatus().toUpperCase()+"_FOR_DROPOFF",new TrackingDto.DelieryStatus("COMPLETED", deliveryLog.getCreatedAt()));
+                    trackingDto.setCurrentStatus(deliveryLog.getStatus().toUpperCase()+"_FOR_DROPOFF");
+                }else{
+                    statusMap.put(deliveryLog.getStatus().toUpperCase()+"_FOR_PICKUP",new TrackingDto.DelieryStatus("COMPLETED", deliveryLog.getCreatedAt()));
+                    trackingDto.setCurrentStatus(deliveryLog.getStatus().toUpperCase()+"_FOR_PICKUP");
+                }
+            }
             statusMap.put(deliveryLog.getStatus().toUpperCase(),new TrackingDto.DelieryStatus("COMPLETED", deliveryLog.getCreatedAt()));
             trackingDto.setCurrentStatus(deliveryLog.getStatus().toUpperCase());
         }
         trackingDto.setStatusMap(statusMap);
-
-        int totalSteps = 5;
+        int totalSteps = 7;
         int completedSteps = 0;
         for (TrackingDto.DelieryStatus status : trackingDto.getStatusMap().values()) {
             if ("COMPLETED".equals(status.status())) {
